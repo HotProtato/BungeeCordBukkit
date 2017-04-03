@@ -1,11 +1,11 @@
-package com.gga.bukkit;
+package net.psychz.gga.bukkit;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.injector.server.SocketInjector;
 import com.comphenix.protocol.injector.server.TemporaryPlayerFactory;
-import com.gga.util.ReflectionUtils;
+import net.psychz.gga.util.ReflectionUtils;
 import io.netty.channel.AbstractChannel;
 import io.netty.channel.Channel;
 
@@ -13,10 +13,10 @@ import java.net.InetSocketAddress;
 
 public class ProtocolLibPacketAdapter extends PacketAdapter {
 
-    private BukkitCDN bukkitCdn = null;
+    private BukkitSide bukkitCdn = null;
     private String properField = null;
 
-    public ProtocolLibPacketAdapter(BukkitCDN bukkitCdn) {
+    public ProtocolLibPacketAdapter(BukkitSide bukkitCdn) {
         super(bukkitCdn, PacketType.Handshake.Client.SET_PROTOCOL);
         this.bukkitCdn = bukkitCdn;
     }

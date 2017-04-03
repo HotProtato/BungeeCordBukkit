@@ -1,4 +1,4 @@
-package com.gga.util;
+package net.psychz.gga.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

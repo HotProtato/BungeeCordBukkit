@@ -1,25 +1,23 @@
-package com.gga.bungee;
+package net.psychz.gga.bungee;
 
-import com.gga.util.ReflectionUtils;
 import io.netty.channel.AbstractChannel;
 import io.netty.channel.Channel;
+import java.lang.reflect.Method;
+import java.net.InetSocketAddress;
 import net.md_5.bungee.api.event.PlayerHandshakeEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.psychz.gga.GGA;
+import net.psychz.gga.util.ReflectionUtils;
 
-import java.lang.reflect.Method;
-import java.net.InetSocketAddress;
+public class HandshakeListener implements Listener {
 
-public class PlayerListener implements Listener {
+    private static final String KEY = "PsychzGGA";
+    private static final String SPLITTER = "//PsychzGGA//";
 
-    private BungeeCDN cdn;
-
-    public PlayerListener(BungeeCDN cdn) {
-        this.cdn = cdn;
-    }
-
-    @EventHandler(priority=-32)
+    @EventHandler(priority = -32)
     public void onHandshake(PlayerHandshakeEvent event) {
+
         Channel channel;
 
         try {
@@ -32,15 +30,19 @@ public class PlayerListener implements Listener {
         }
 
         String raw = event.getHandshake().getHost();
-        cdn.getLogger().info("GGA connection: " + raw);
+        GGA.getLogger().info("GGA connection: " + raw);
 
         // Erm adam asked me to do this?
         // pnada was here
-        if (!raw.contains("PsychzGGA")) event.getConnection().disconnect();
+        if (!raw.contains(KEY)) {
+            event.getConnection().disconnect();
+        }
 
-        String[] hostname = raw.split("//PsychzGGA//");
+        String[] hostname = raw.split(SPLITTER);
 
-        if (hostname.length < 2) return;
+        if (hostname.length < 2) {
+            return;
+        }
         String vHost = hostname[0];
 
         try {
