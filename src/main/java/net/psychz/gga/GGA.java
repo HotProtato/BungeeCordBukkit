@@ -23,7 +23,7 @@ public class GGA {
 
     private static String version;
 
-    private static boolean enable;
+    public static boolean enable;
 
     public static boolean init(Logger localLogger, File propertiesFile, String pluginVersion) {
 

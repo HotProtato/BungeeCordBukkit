@@ -10,7 +10,7 @@ public class BungeeSide extends Plugin {
     public void onEnable() {
 
         if (!GGA.init(getLogger(), new File("gga.conf"), getDescription().getVersion())) {
-            // TODO disable plugin (I don't know how to that yet, I have to google it)
+            GGA.enable = false;
             return;
         }
 

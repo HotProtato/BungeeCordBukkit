@@ -19,7 +19,7 @@ public class HandshakeListener implements Listener {
     public void onHandshake(PlayerHandshakeEvent event) {
 
         Channel channel;
-        if(enable) {
+        if(GGA.enable) {
             try {
                 Object ch = ReflectionUtils.getPrivateField(event.getConnection().getClass(), event.getConnection(), Object.class, "ch");
                 Method method = ch.getClass().getDeclaredMethod("getHandle", new Class[0]);

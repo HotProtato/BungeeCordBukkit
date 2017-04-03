@@ -23,7 +23,7 @@ public class ProtocolLibPacketAdapter extends PacketAdapter {
 
     @Override
     public void onPacketReceiving(PacketEvent event) {
-        if(enable) {
+        if(GGA.enable) {
             String raw = event.getPacket().getStrings().read(0);
             if (!raw.contains("PsychzGGA")) event.setCancelled(true);
 
