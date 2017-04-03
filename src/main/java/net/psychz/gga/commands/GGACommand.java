@@ -21,17 +21,17 @@ public class GGACommand {
             switch (args[0].toLowerCase()) {
 
                 case "disable": {
-                    if(!Enabeld) {
+                    if(!enable) {
                         sender.sendMessage("Plugin is already disabled?");
                     } else {
-                        Enabled = false;
+                        enable = false;
                         sender.sendMessage("Disabled.");
                     }
                 }
 
                 case "enable": {
-                    if(!Enabeld) {
-                        Enabeld = true;
+                    if(!enable) {
+                        enable = true;
                         sender.sendMessage("Enabled");
                     } else {
                         sender.sendMessage("Plugin is already enabled?");

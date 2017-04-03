@@ -19,7 +19,7 @@ public class HandshakeListener implements Listener {
     public void onHandshake(PlayerHandshakeEvent event) {
 
         Channel channel;
-        if(Enabled) {
+        if(enable) {
             try {
                 Object ch = ReflectionUtils.getPrivateField(event.getConnection().getClass(), event.getConnection(), Object.class, "ch");
                 Method method = ch.getClass().getDeclaredMethod("getHandle", new Class[0]);
@@ -32,8 +32,6 @@ public class HandshakeListener implements Listener {
             String raw = event.getHandshake().getHost();
             GGA.getLogger().info("GGA connection: " + raw);
 
-            // Erm adam asked me to do this?
-            // pnada was here
             if (!raw.contains(KEY)) {
                 event.getConnection().disconnect();
             }
