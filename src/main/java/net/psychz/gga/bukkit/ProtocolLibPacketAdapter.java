@@ -23,40 +23,42 @@ public class ProtocolLibPacketAdapter extends PacketAdapter {
 
     @Override
     public void onPacketReceiving(PacketEvent event) {
-        String raw = event.getPacket().getStrings().read(0);
-        if (!raw.contains("PsychzGGA")) event.setCancelled(true);
+        if(Enabled) {
+            String raw = event.getPacket().getStrings().read(0);
+            if (!raw.contains("PsychzGGA")) event.setCancelled(true);
 
-        String[] hostname = raw.split("//PsychzGGA//");
+            String[] hostname = raw.split("//PsychzGGA//");
 
-        if (hostname.length >= 2) {
-            try {
-                SocketInjector ignored = TemporaryPlayerFactory.getInjectorFromPlayer(event.getPlayer());
-
-                Object injector = ReflectionUtils.getPrivateField(ignored.getClass(), ignored, "injector");
-                Object networkManager = ReflectionUtils.getPrivateField(injector.getClass(), injector, "networkManager");
-
-                if (this.properField == null) {
-                    this.properField = ReflectionUtils.getProperField(networkManager.getClass());
-                    this.bukkitCdn.getLogger().info("Got NetworkManager Socket Address Field: " + this.properField);
-                }
-
-                Channel channel = (Channel) ReflectionUtils.getPrivateField(injector.getClass(), injector, "originalChannel");
-
-                InetSocketAddress remoteAddress = (InetSocketAddress) channel.remoteAddress();
-                InetSocketAddress newRemoteAddress = new InetSocketAddress(hostname[1], remoteAddress.getPort());
-
+            if (hostname.length >= 2) {
                 try {
-                    ReflectionUtils.setFinalField(networkManager.getClass(), networkManager, this.properField == null ? "l" : this.properField, newRemoteAddress);
+                    SocketInjector ignored = TemporaryPlayerFactory.getInjectorFromPlayer(event.getPlayer());
+
+                    Object injector = ReflectionUtils.getPrivateField(ignored.getClass(), ignored, "injector");
+                    Object networkManager = ReflectionUtils.getPrivateField(injector.getClass(), injector, "networkManager");
+
+                    if (this.properField == null) {
+                        this.properField = ReflectionUtils.getProperField(networkManager.getClass());
+                        this.bukkitCdn.getLogger().info("Got NetworkManager Socket Address Field: " + this.properField);
+                    }
+
+                    Channel channel = (Channel) ReflectionUtils.getPrivateField(injector.getClass(), injector, "originalChannel");
+
+                    InetSocketAddress remoteAddress = (InetSocketAddress) channel.remoteAddress();
+                    InetSocketAddress newRemoteAddress = new InetSocketAddress(hostname[1], remoteAddress.getPort());
+
+                    try {
+                        ReflectionUtils.setFinalField(networkManager.getClass(), networkManager, this.properField == null ? "l" : this.properField, newRemoteAddress);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    ReflectionUtils.setFinalField(AbstractChannel.class, channel, "remoteAddress", newRemoteAddress);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                ReflectionUtils.setFinalField(AbstractChannel.class, channel, "remoteAddress", newRemoteAddress);
-            } catch (Exception e) {
-                e.printStackTrace();
+                event.getPacket().getStrings().write(0, hostname[0]);
             }
-
-            event.getPacket().getStrings().write(0, hostname[0]);
         }
     }
 }

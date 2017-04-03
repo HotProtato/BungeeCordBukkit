@@ -19,38 +19,39 @@ public class HandshakeListener implements Listener {
     public void onHandshake(PlayerHandshakeEvent event) {
 
         Channel channel;
+        if(Enabled) {
+            try {
+                Object ch = ReflectionUtils.getPrivateField(event.getConnection().getClass(), event.getConnection(), Object.class, "ch");
+                Method method = ch.getClass().getDeclaredMethod("getHandle", new Class[0]);
+                channel = (Channel) method.invoke(ch, new Object[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
 
-        try {
-            Object ch = ReflectionUtils.getPrivateField(event.getConnection().getClass(), event.getConnection(), Object.class, "ch");
-            Method method = ch.getClass().getDeclaredMethod("getHandle", new Class[0]);
-            channel = (Channel) method.invoke(ch, new Object[0]);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
+            String raw = event.getHandshake().getHost();
+            GGA.getLogger().info("GGA connection: " + raw);
 
-        String raw = event.getHandshake().getHost();
-        GGA.getLogger().info("GGA connection: " + raw);
+            // Erm adam asked me to do this?
+            // pnada was here
+            if (!raw.contains(KEY)) {
+                event.getConnection().disconnect();
+            }
 
-        // Erm adam asked me to do this?
-        // pnada was here
-        if (!raw.contains(KEY)) {
-            event.getConnection().disconnect();
-        }
+            String[] hostname = raw.split(SPLITTER);
 
-        String[] hostname = raw.split(SPLITTER);
+            if (hostname.length < 2) {
+                return;
+            }
+            String vHost = hostname[0];
 
-        if (hostname.length < 2) {
-            return;
-        }
-        String vHost = hostname[0];
-
-        try {
-            ReflectionUtils.setFinalField(AbstractChannel.class, channel, "remoteAddress", new InetSocketAddress(hostname[1], event.getConnection().getAddress().getPort()));
-            ReflectionUtils.setFinalField(event.getConnection().getClass(), event.getConnection(), "virtualHost", new InetSocketAddress(vHost, event.getHandshake().getPort()));
-            ReflectionUtils.setFinalField(event.getHandshake().getClass(), event.getHandshake(), "host", vHost);
-        } catch (Exception exception) {
-            exception.printStackTrace();
+            try {
+                ReflectionUtils.setFinalField(AbstractChannel.class, channel, "remoteAddress", new InetSocketAddress(hostname[1], event.getConnection().getAddress().getPort()));
+                ReflectionUtils.setFinalField(event.getConnection().getClass(), event.getConnection(), "virtualHost", new InetSocketAddress(vHost, event.getHandshake().getPort()));
+                ReflectionUtils.setFinalField(event.getHandshake().getClass(), event.getHandshake(), "host", vHost);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
         }
     }
 }

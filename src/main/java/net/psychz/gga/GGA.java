@@ -23,6 +23,8 @@ public class GGA {
 
     private static String version;
 
+    private static Bool Enabled;
+
     public static boolean init(Logger localLogger, File propertiesFile, String pluginVersion) {
 
         version = pluginVersion;
@@ -41,7 +43,7 @@ public class GGA {
 
             getProperties().setProperty("gga_connection_enabled", "true");
             getProperties().setProperty("gga_external_connection_enabled", "false");
-
+            Enabled = true;
             try {
                 getProperties().store(new FileWriter(propertiesFile), null);
             } catch (IOException ex) {
