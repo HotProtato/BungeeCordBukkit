@@ -1,6 +1,6 @@
 name: GGA
 version: ${version}
-main: com.gga.bukkit.BukkitCDN
+main: net.psychz.gga.bukkit.BukkitSide
 depend: [ProtocolLib]
 authors: [suedadam, Sponges]
 description: Psychz's GGA platform plugin able to be used on both Bukkit/Spigot and BungeeCord. 
